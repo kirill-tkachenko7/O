@@ -5,11 +5,15 @@
 class Game
 {
 public:
-	void mainLoop();
+	bool mainLoop();
 	Game();
 	~Game();
 private:
-	LiquidCrystal lcd = LiquidCrystal(12, 11, 4, 5, 6, 7);
+	LiquidCrystal* lcd;
+	char* row0, * row1;
+	int gameCycleSize, cycleFrame;
+	int score = 0;
+	void gameOver(int row);
 	class Field
 	{
 	public:
@@ -23,6 +27,14 @@ private:
 		char* row0;
 		char* row1;
 	};
+	class O {
+	public:
+		void update();
+		int getPosition();
+	private:
+		int position = 0;
+	};
+	O o;
 	Field field;
 };
 #endif

@@ -1,25 +1,76 @@
 #include "Game.h"
 
-void Game::mainLoop()
+bool Game::mainLoop()
 {
-	field.update();
-	lcd.clear();
-	lcd.setCursor(0, 0);
-	lcd.print(field.getRow0());
-	lcd.setCursor(0, 1);
-	lcd.print(field.getRow1());
-	delay(250);
+	cycleFrame = ++cycleFrame % gameCycleSize;
+	o.update();
+	if (cycleFrame == 0) 
+	{
+		field.update();
+		lcd->clear();
+		lcd->setCursor(0, 0);
+		row0 = field.getRow0();
+		lcd->print(row0);
+		row1 = field.getRow1();
+		lcd->setCursor(0, 1);
+		lcd->print(row1);
+		score++;
+	}
+	if (o.getPosition() == 0) {
+		lcd->setCursor(0, 1);
+		lcd->print(row1[0]);
+		lcd->setCursor(0, 0);
+		lcd->print("O");
+		if (row0[0] == 'I') {
+			gameOver(0);
+			return false;
+		}
+	}
+	else if (o.getPosition() == 1) {
+		lcd->setCursor(0, 0);
+		lcd->print(row0[0]);
+		lcd->setCursor(0, 1);
+		lcd->print("O");
+		if (row1[0] == 'I') {
+			gameOver(1);
+			return false;
+		}
+	}
+	delay(30);
+	return true;
 }
 
 Game::Game()
 {
-	lcd.begin(16, 2);
-	randomSeed(analogRead(0));
+	gameCycleSize = 6;
+	cycleFrame - gameCycleSize - 1;
+	lcd = new LiquidCrystal(12, 11, 4, 5, 6, 7);
+	lcd->begin(16, 2);
 }
 
 Game::~Game()
 {
-	;
+	delete lcd;
+}
+
+void Game::gameOver(int row)
+{
+	for (int i = 0; i < 10; i++) {
+		lcd->setCursor(0, row);
+		lcd->print('X');
+		delay(100);
+		lcd->setCursor(0, row);
+		lcd->print('I');
+		delay(100);
+	}
+	lcd->setCursor(0, row);
+	lcd->print('X');
+	delay(500);
+	lcd->clear();
+	lcd->print("Game Over!");
+	lcd->setCursor(0, 1);
+	lcd->print("Score: ");
+	lcd->print(score);
 }
 
 char* Game::Field::getRow0()
@@ -51,6 +102,7 @@ void Game::Field::update()
 
 Game::Field::Field()
 {
+	randomSeed(analogRead(0));
 	row0 = "               I";
 	row1 = "                ";
 }
@@ -58,4 +110,15 @@ Game::Field::Field()
 Game::Field::~Field()
 {
 	;
+}
+
+void Game::O::update() {
+	if (digitalRead(13) == HIGH)
+		position = 0;
+	else if (digitalRead(10) == HIGH)
+		position = 1;
+}
+int Game::O::getPosition()
+{
+	return position;
 }

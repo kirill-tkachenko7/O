@@ -11,7 +11,7 @@ void setup() {
 	
 }
 
-// the loop function runs over and over again until power down or reset
 void loop() {
-	o.mainLoop();
+	while(o.mainLoop());
+	exit(1);
 }
