@@ -116,11 +116,17 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Difficulty.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="__vm\.O.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Difficulty.cpp" />
     <ClCompile Include="Game.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="O.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

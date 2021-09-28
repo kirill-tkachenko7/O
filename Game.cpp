@@ -8,8 +8,8 @@ bool Game::mainLoop()
 	{
 		field.update();
 		lcd->clear();
-		lcd->setCursor(0, 0);
 		row0 = field.getRow0();
+		lcd->setCursor(0, 0);
 		lcd->print(row0);
 		row1 = field.getRow1();
 		lcd->setCursor(0, 1);
@@ -43,7 +43,7 @@ bool Game::mainLoop()
 Game::Game()
 {
 	gameCycleSize = 6;
-	cycleFrame - gameCycleSize - 1;
+	cycleFrame = gameCycleSize - 1;
 	lcd = new LiquidCrystal(12, 11, 4, 5, 6, 7);
 	lcd->begin(16, 2);
 }
@@ -58,10 +58,10 @@ void Game::gameOver(int row)
 	for (int i = 0; i < 10; i++) {
 		lcd->setCursor(0, row);
 		lcd->print('X');
-		delay(100);
+		delay(130);
 		lcd->setCursor(0, row);
 		lcd->print('I');
-		delay(100);
+		delay(130);
 	}
 	lcd->setCursor(0, row);
 	lcd->print('X');
@@ -90,8 +90,8 @@ void Game::Field::update()
 		row0[i] = row0[i + 1];
 		row1[i] = row1[i + 1];
 	}
-	row0[i] = row1[i - 1] == 'I' ? ' ' : (random(1, 100) < 75 ? ' ' : 'I');
-	row1[i] = row0[i - 1] == 'I' ? ' ' : (random(1, 100) < 75 ? ' ' : 'I');
+	row0[i] = row1[i - 1] == 'I' ? ' ' : (random(1, 100) < 50 ? ' ' : 'I');
+	row1[i] = row0[i - 1] == 'I' ? ' ' : (random(1, 100) < 50 ? ' ' : 'I');
 	if (row0[i] == 'I' && row1[i] == 'I') {
 		if (random(0, 1) == 0)
 			row0[i] = ' ';
@@ -103,8 +103,16 @@ void Game::Field::update()
 Game::Field::Field()
 {
 	randomSeed(analogRead(0));
-	row0 = "               I";
-	row1 = "                ";
+	if (random(0, 1)) 
+	{
+		row0 = "               I";
+		row1 = "                ";
+	}
+	else 
+	{
+		row0 = "                ";
+		row1 = "               I";
+	}
 }
 
 Game::Field::~Field()
